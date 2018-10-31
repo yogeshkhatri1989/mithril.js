@@ -32,7 +32,7 @@ o.spec("test-utils/components", function() {
 				var vnode = cmp1.view()
 
 				o(vnode != null).equals(true)
-				o(vnode).deepEquals({tag: "div"})
+				o(vnode).deepEquals("a")
 
 				if (component.kind !== "constructible") {
 					o(cmp2).deepEquals(methods)
