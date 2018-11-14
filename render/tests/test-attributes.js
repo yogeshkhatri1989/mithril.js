@@ -14,9 +14,9 @@ o.spec("attributes", function() {
 	o.spec("basics", function() {
 		o("works (create/update/remove)", function() {
 
-			var a = {tag: "div", attrs: {}}
-			var b = {tag: "div", attrs: {id: "test"}}
-			var c = {tag: "div", attrs: {}}
+			var a = m("div", {})
+			var b = m("div", {id: "test"})
+			var c = m("div", {})
 
 			render(root, [a]);
 
@@ -31,9 +31,9 @@ o.spec("attributes", function() {
 			o(c.dom.hasAttribute("id")).equals(false)
 		})
 		o("undefined attr is equivalent to a lack of attr", function() {
-			var a = {tag: "div", attrs: {id: undefined}}
-			var b = {tag: "div", attrs: {id: "test"}}
-			var c = {tag: "div", attrs: {id: undefined}}
+			var a = m("div", {id: undefined})
+			var b = m("div", {id: "test"})
+			var c = m("div", {id: undefined})
 
 			render(root, [a]);
 
@@ -66,12 +66,12 @@ o.spec("attributes", function() {
 			}
 
 			render(root, [
-				{tag: "input", attrs: {value: "hello"}},
-				{tag: "input", attrs: {value: "hello"}},
-				{tag: "input", attrs: {value: "hello"}},
-				{tag: "custom-element", attrs: {custom: "x"}},
-				{tag: "input", attrs: {is: "something-special", custom: "x"}},
-				{tag: "custom-element", attrs: {is: "something-special", custom: "x"}}
+				m("input", {value: "hello"}),
+				m("input", {value: "hello"}),
+				m("input", {value: "hello"}),
+				m("custom-element", {custom: "x"}),
+				m("input", {is: "something-special", custom: "x"}),
+				m("custom-element", {is: "something-special", custom: "x"})
 			])
 
 			o(spies[0].callCount).equals(0)
@@ -110,12 +110,12 @@ o.spec("attributes", function() {
 			}
 
 			render(root, [
-				{tag: "input", attrs: {value: "hello"}},
-				{tag: "input", attrs: {value: "hello"}},
-				{tag: "input", attrs: {value: "hello"}},
-				{tag: "custom-element", attrs: {custom: "x"}},
-				{tag: "input", attrs: {is: "something-special", custom: "x"}},
-				{tag: "custom-element", attrs: {is: "something-special", custom: "x"}}
+				m("input", {value: "hello"}),
+				m("input", {value: "hello"}),
+				m("input", {value: "hello"}),
+				m("custom-element", {custom: "x"}),
+				m("input", {is: "something-special", custom: "x"}),
+				m("custom-element", {is: "something-special", custom: "x"})
 			])
 
 			o(spies[0].callCount).equals(0)
@@ -135,14 +135,14 @@ o.spec("attributes", function() {
 	})
 	o.spec("input readonly", function() {
 		o("when input readonly is true, attribute is present", function() {
-			var a = {tag: "input", attrs: {readonly: true}}
+			var a = m("input", {readonly: true})
 
 			render(root, [a])
 
 			o(a.dom.attributes["readonly"].value).equals("")
 		})
 		o("when input readonly is false, attribute is not present", function() {
-			var a = {tag: "input", attrs: {readonly: false}}
+			var a = m("input", {readonly: false})
 
 			render(root, [a])
 
@@ -151,7 +151,7 @@ o.spec("attributes", function() {
 	})
 	o.spec("input checked", function() {
 		o("when input checked is true, attribute is not present", function() {
-			var a = {tag: "input", attrs: {checked: true}}
+			var a = m("input", {checked: true})
 
 			render(root, [a])
 
@@ -159,7 +159,7 @@ o.spec("attributes", function() {
 			o(a.dom.attributes["checked"]).equals(undefined)
 		})
 		o("when input checked is false, attribute is not present", function() {
-			var a = {tag: "input", attrs: {checked: false}}
+			var a = m("input", {checked: false})
 
 			render(root, [a])
 
@@ -167,8 +167,8 @@ o.spec("attributes", function() {
 			o(a.dom.attributes["checked"]).equals(undefined)
 		})
 		o("after input checked is changed by 3rd party, it can still be changed by render", function() {
-			var a = {tag: "input", attrs: {checked: false}}
-			var b = {tag: "input", attrs: {checked: true}}
+			var a = m("input", {checked: false})
+			var b = m("input", {checked: true})
 
 			render(root, [a])
 
@@ -183,16 +183,16 @@ o.spec("attributes", function() {
 	})
 	o.spec("input.value", function() {
 		o("can be set as text", function() {
-			var a = {tag: "input", attrs: {value: "test"}}
+			var a = m("input", {value: "test"})
 
 			render(root, [a]);
 
 			o(a.dom.value).equals("test")
 		})
 		o("a lack of attribute removes `value`", function() {
-			var a = {tag: "input", attrs: {}}
-			var b = {tag: "input", attrs: {value: "test"}}
-			var c = {tag: "input", attrs: {}}
+			var a = m("input", {})
+			var b = m("input", {value: "test"})
+			var c = m("input", {})
 
 			render(root, [a])
 
@@ -208,16 +208,16 @@ o.spec("attributes", function() {
 			o(a.dom.value).equals("")
 		})
 		o("can be set as number", function() {
-			var a = {tag: "input", attrs: {value: 1}}
+			var a = m("input", {value: 1})
 
 			render(root, [a]);
 
 			o(a.dom.value).equals("1")
 		})
 		o("null becomes the empty string", function() {
-			var a = {tag: "input", attrs: {value: null}}
-			var b = {tag: "input", attrs: {value: "test"}}
-			var c = {tag: "input", attrs: {value: null}}
+			var a = m("input", {value: null})
+			var b = m("input", {value: "test"})
+			var c = m("input", {value: null})
 
 			render(root, [a]);
 
@@ -235,9 +235,9 @@ o.spec("attributes", function() {
 			o(c.dom.getAttribute("value")).equals(null)
 		})
 		o("'' and 0 are different values", function() {
-			var a = {tag: "input", attrs: {value: 0}, children:[{tag:"#", children:""}]}
-			var b = {tag: "input", attrs: {value: ""}, children:[{tag:"#", children:""}]}
-			var c = {tag: "input", attrs: {value: 0}, children:[{tag:"#", children:""}]}
+			var a = m("input", {value: 0}, [{tag:"#", children:""}])
+			var b = m("input", {value: ""}, [{tag:"#", children:""}])
+			var c = m("input", {value: 0}, [{tag:"#", children:""}])
 
 			render(root, [a]);
 
@@ -257,11 +257,11 @@ o.spec("attributes", function() {
 			var root = $window.document.body
 			var render = vdom($window).render
 
-			var a = {tag: "input"}
-			var b = {tag: "input", attrs: {value: "1"}}
-			var c = {tag: "input", attrs: {value: "1"}}
-			var d = {tag: "input", attrs: {value: 1}}
-			var e = {tag: "input", attrs: {value: 2}}
+			var a = m("input")
+			var b = m("input", {value: "1"})
+			var c = m("input", {value: "1"})
+			var d = m("input", {value: 1})
+			var e = m("input", {value: 2})
 
 			render(root, [a])
 			var spies = $window.__getSpies(a.dom)
@@ -296,9 +296,9 @@ o.spec("attributes", function() {
 			var root = $window.document.body
 			var render = vdom($window).render
 
-			var a = {tag: "input", attrs: {type: "radio"}}
-			var b = {tag: "input", attrs: {type: "text"}}
-			var c = {tag: "input", attrs: {}}
+			var a = m("input", {type: "radio"})
+			var b = m("input", {type: "text"})
+			var c = m("input", {})
 
 			render(root, [a])
 			var spies = $window.__getSpies(a.dom)
@@ -319,8 +319,8 @@ o.spec("attributes", function() {
 	})
 	o.spec("textarea.value", function() {
 		o("can be removed by not passing a value", function() {
-			var a = {tag: "textarea", attrs: {value:"x"}}
-			var b = {tag: "textarea", attrs: {}}
+			var a = m("textarea", {value:"x"})
+			var b = m("textarea", {})
 
 			render(root, [a])
 
@@ -336,11 +336,11 @@ o.spec("attributes", function() {
 			var root = $window.document.body
 			var render = vdom($window).render
 
-			var a = {tag: "textarea"}
-			var b = {tag: "textarea", attrs: {value: "1"}}
-			var c = {tag: "textarea", attrs: {value: "1"}}
-			var d = {tag: "textarea", attrs: {value: 1}}
-			var e = {tag: "textarea", attrs: {value: 2}}
+			var a = m("textarea")
+			var b = m("textarea", {value: "1"})
+			var c = m("textarea", {value: "1"})
+			var d = m("textarea", {value: 1})
+			var e = m("textarea", {value: 2})
 
 			render(root, [a])
 			var spies = $window.__getSpies(a.dom)
@@ -371,14 +371,14 @@ o.spec("attributes", function() {
 	})
 	o.spec("link href", function() {
 		o("when link href is true, attribute is present", function() {
-			var a = {tag: "a", attrs: {href: true}}
+			var a = m("a", {href: true})
 
 			render(root, [a])
 
 			o(a.dom.attributes["href"]).notEquals(undefined)
 		})
 		o("when link href is false, attribute is not present", function() {
-			var a = {tag: "a", attrs: {href: false}}
+			var a = m("a", {href: false})
 
 			render(root, [a])
 
@@ -387,7 +387,7 @@ o.spec("attributes", function() {
 	})
 	o.spec("canvas width and height", function() {
 		o("uses attribute API", function() {
-			var canvas = {tag: "canvas", attrs: {width: "100%"}}
+			var canvas = m("canvas", {width: "100%"})
 
 			render(root, canvas)
 
@@ -397,7 +397,7 @@ o.spec("attributes", function() {
 	})
 	o.spec("svg", function() {
 		o("when className is specified then it should be added as a class", function() {
-			var a = {tag: "svg", attrs: {className: "test"}}
+			var a = m("svg", {className: "test"})
 
 			render(root, [a]);
 
@@ -426,23 +426,23 @@ o.spec("attributes", function() {
 	})
 	o.spec("option.value", function() {
 		o("can be set as text", function() {
-			var a = {tag: "option", attrs: {value: "test"}}
+			var a = m("option", {value: "test"})
 
 			render(root, [a]);
 
 			o(a.dom.value).equals("test")
 		})
 		o("can be set as number", function() {
-			var a = {tag: "option", attrs: {value: 1}}
+			var a = m("option", {value: 1})
 
 			render(root, [a]);
 
 			o(a.dom.value).equals("1")
 		})
 		o("null removes the attribute", function() {
-			var a = {tag: "option", attrs: {value: null}}
-			var b = {tag: "option", attrs: {value: "test"}}
-			var c = {tag: "option", attrs: {value: null}}
+			var a = m("option", {value: null})
+			var b = m("option", {value: "test"})
+			var c = m("option", {value: null})
 
 			render(root, [a]);
 
@@ -460,9 +460,9 @@ o.spec("attributes", function() {
 			o(c.dom.hasAttribute("value")).equals(false)
 		})
 		o("'' and 0 are different values", function() {
-			var a = {tag: "option", attrs: {value: 0}, children:[{tag:"#", children:""}]}
-			var b = {tag: "option", attrs: {value: ""}, children:[{tag:"#", children:""}]}
-			var c = {tag: "option", attrs: {value: 0}, children:[{tag:"#", children:""}]}
+			var a = m("option", {value: 0}, [{tag:"#", children:""}])
+			var b = m("option", {value: ""}, [{tag:"#", children:""}])
+			var c = m("option", {value: 0}, [{tag:"#", children:""}])
 
 			render(root, [a]);
 
@@ -482,11 +482,11 @@ o.spec("attributes", function() {
 			var root = $window.document.body
 			var render = vdom($window).render
 
-			var a = {tag: "option"}
-			var b = {tag: "option", attrs: {value: "1"}}
-			var c = {tag: "option", attrs: {value: "1"}}
-			var d = {tag: "option", attrs: {value: 1}}
-			var e = {tag: "option", attrs: {value: 2}}
+			var a = m("option")
+			var b = m("option", {value: "1"})
+			var c = m("option", {value: "1"})
+			var d = m("option", {value: 1})
+			var e = m("option", {value: 2})
 
 			render(root, [a])
 			var spies = $window.__getSpies(a.dom)
@@ -650,7 +650,7 @@ o.spec("attributes", function() {
 	})
 	o.spec("contenteditable throws on untrusted children", function() {
 		o("including text nodes", function() {
-			var div = {tag: "div", attrs: {contenteditable: true}, text: ""}
+			var div = m("div", {contenteditable: true}, "")
 			var succeeded = false
 
 			try {
@@ -663,7 +663,7 @@ o.spec("attributes", function() {
 			o(succeeded).equals(false)
 		})
 		o("including elements", function() {
-			var div = {tag: "div", attrs: {contenteditable: true}, children: [{tag: "script", attrs: {src: "http://evil.com"}}]}
+			var div = m("div", {contenteditable: true}, m("script", {src: "http://evil.com"}))
 			var succeeded = false
 
 			try {
@@ -676,7 +676,7 @@ o.spec("attributes", function() {
 			o(succeeded).equals(false)
 		})
 		o("tolerating empty children", function() {
-			var div = {tag: "div", attrs: {contenteditable: true}, children: []}
+			var div = m("div", {contenteditable: true}, [])
 			var succeeded = false
 
 			try {
@@ -689,7 +689,7 @@ o.spec("attributes", function() {
 			o(succeeded).equals(true)
 		})
 		o("tolerating trusted content", function() {
-			var div = {tag: "div", attrs: {contenteditable: true}, children: [{tag: "<", children: "<a></a>"}]}
+			var div = m("div", {contenteditable: true}, [m("<", "<a></a>")])
 			var succeeded = false
 
 			try {

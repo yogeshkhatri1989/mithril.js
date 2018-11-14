@@ -664,7 +664,7 @@ o.spec("route", function() {
 							},
 							render: function() {
 								renderCount++
-								return {tag: Component}
+								return m(Component)
 							},
 						},
 					})

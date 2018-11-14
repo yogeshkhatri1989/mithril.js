@@ -175,7 +175,7 @@ o.spec("textContent", function() {
 		o(updated[0].dom).equals(root.childNodes[0])
 	})
 	o("updates from without text to with text", function() {
-		var vnodes = [{tag: "a"}]
+		var vnodes = [m("a")]
 		var updated = [{tag: "a", text: "b"}]
 
 		render(root, vnodes)
@@ -188,7 +188,7 @@ o.spec("textContent", function() {
 	})
 	o("updates from with text to without text", function() {
 		var vnodes = [{tag: "a", text: "a"}]
-		var updated = [{tag: "a"}]
+		var updated = [m("a")]
 
 		render(root, vnodes)
 		render(root, updated)

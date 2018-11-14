@@ -3,6 +3,7 @@
 var o = require("../../ospec/ospec")
 var domMock = require("../../test-utils/domMock")
 var vdom = require("../../render/render")
+var m = require("../../render/hyperscript")
 
 o.spec("form inputs", function() {
 	var $window, root, render
@@ -19,9 +20,9 @@ o.spec("form inputs", function() {
 
 	o.spec("input", function() {
 		o("maintains focus after move", function() {
-			var input = {tag: "input", key: 1}
-			var a = {tag: "a", key: 2}
-			var b = {tag: "b", key: 3}
+			var input = m("input", {key: 1})
+			var a = m("a", {key: 2})
+			var b = m("b", {key: 3})
 
 			render(root, [input, a, b])
 			input.dom.focus()
@@ -41,8 +42,8 @@ o.spec("form inputs", function() {
 		})
 
 		o("syncs input value if DOM value differs from vdom value", function() {
-			var input = {tag: "input", attrs: {value: "aaa", oninput: function() {}}}
-			var updated = {tag: "input", attrs: {value: "aaa", oninput: function() {}}}
+			var input = m("input", {value: "aaa", oninput: function() {}})
+			var updated = m("input", {value: "aaa", oninput: function() {}})
 
 			render(root, [input])
 
@@ -60,8 +61,8 @@ o.spec("form inputs", function() {
 		})
 
 		o("clear element value if vdom value is set to undefined (aka removed)", function() {
-			var input = {tag: "input", attrs: {value: "aaa", oninput: function() {}}}
-			var updated = {tag: "input", attrs: {value: undefined, oninput: function() {}}}
+			var input = m("input", {value: "aaa", oninput: function() {}})
+			var updated = m("input", {value: undefined, oninput: function() {}})
 
 			render(root, [input])
 			render(root, [updated])
@@ -70,8 +71,8 @@ o.spec("form inputs", function() {
 		})
 
 		o("syncs input checked attribute if DOM value differs from vdom value", function() {
-			var input = {tag: "input", attrs: {type: "checkbox", checked: true, onclick: function() {}}}
-			var updated = {tag: "input", attrs: {type: "checkbox", checked: true, onclick: function() {}}}
+			var input = m("input", {type: "checkbox", checked: true, onclick: function() {}})
+			var updated = m("input", {type: "checkbox", checked: true, onclick: function() {}})
 
 			render(root, [input])
 
@@ -91,7 +92,7 @@ o.spec("form inputs", function() {
 	o.spec("select", function() {
 		o("select works without attributes", function() {
 			var select = {tag: "select", children: [
-				{tag: "option", attrs: {value: "a"}, text: "aaa"},
+				m("option", {value: "a"}, "aaa")
 			]}
 
 			render(root, [select])
@@ -102,7 +103,7 @@ o.spec("form inputs", function() {
 
 		o("select option can have empty string value", function() {
 			var select = {tag: "select", children :[
-				{tag: "option", attrs: {value: ""}, text: "aaa"}
+				m("option", {value: ""}, "aaa")
 			]}
 
 			render(root, [select])
@@ -132,7 +133,7 @@ o.spec("form inputs", function() {
 
 			//test that value can be set to "" in subsequent render
 			select = {tag: "select", children :[
-				{tag: "option", attrs: {value: ""}, text: "aaa"}
+				m("option", {value: ""}, "aaa")
 			]}
 
 			render(root, [select])
@@ -152,7 +153,7 @@ o.spec("form inputs", function() {
 		})
 
 		o("select yields invalid value without children", function() {
-			var select = {tag: "select", attrs: {value: "a"}}
+			var select = m("select", {value: "a"})
 
 			render(root, [select])
 
@@ -161,11 +162,11 @@ o.spec("form inputs", function() {
 		})
 
 		o("select value is set correctly on first render", function() {
-			var select = {tag: "select", attrs: {value: "b"}, children: [
-				{tag: "option", attrs: {value: "a"}, text: "aaa"},
-				{tag: "option", attrs: {value: "b"}, text: "bbb"},
-				{tag: "option", attrs: {value: "c"}, text: "ccc"},
-			]}
+			var select = m("select", {value: "b"}, [
+				m("option", {value: "a"}, "aaa"),
+				m("option", {value: "b"}, "bbb"),
+				m("option", {value: "c"}, "ccc")
+			])
 
 			render(root, [select])
 
@@ -175,11 +176,11 @@ o.spec("form inputs", function() {
 
 		o("syncs select value if DOM value differs from vdom value", function() {
 			function makeSelect() {
-				return {tag: "select", attrs: {value: "b"}, children: [
-					{tag: "option", attrs: {value: "a"}, text: "aaa"},
-					{tag: "option", attrs: {value: "b"}, text: "bbb"},
-					{tag: "option", attrs: {value: "c"}, text: "ccc"},
-				]}
+				return m("select", {value: "b"}, [
+					m("option", {value: "a"}, "aaa"),
+					m("option", {value: "b"}, "bbb"),
+					m("option", {value: "c"}, "ccc")
+				])
 			}
 
 			render(root, [makeSelect()])

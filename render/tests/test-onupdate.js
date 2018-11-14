@@ -3,6 +3,7 @@
 var o = require("../../ospec/ospec")
 var domMock = require("../../test-utils/domMock")
 var vdom = require("../../render/render")
+var m = require("../../hyperscript")
 
 o.spec("onupdate", function() {
 	var $window, root, render
@@ -15,8 +16,8 @@ o.spec("onupdate", function() {
 	o("does not call onupdate when creating element", function() {
 		var create = o.spy()
 		var update = o.spy()
-		var vnode = {tag: "div", attrs: {onupdate: create}, state: {}}
-		var updated = {tag: "div", attrs: {onupdate: update}, state: {}}
+		var vnode = m("div", {onupdate: create})
+		var updated = m("div", {onupdate: update})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -28,7 +29,7 @@ o.spec("onupdate", function() {
 	})
 	o("does not call onupdate when removing element", function() {
 		var create = o.spy()
-		var vnode = {tag: "div", attrs: {onupdate: create}}
+		var vnode = m("div", {onupdate: create})
 
 		render(root, [vnode])
 		render(root, [])
@@ -59,8 +60,8 @@ o.spec("onupdate", function() {
 	})
 	o("does not call old onupdate when removing the onupdate property in new vnode", function() {
 		var create = o.spy()
-		var vnode = {tag: "a", attrs: {onupdate: create}}
-		var updated = {tag: "a"}
+		var vnode = m("a", {onupdate: create})
+		var updated = m("a")
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -70,8 +71,8 @@ o.spec("onupdate", function() {
 	o("calls onupdate when noop", function() {
 		var create = o.spy()
 		var update = o.spy()
-		var vnode = {tag: "div", attrs: {onupdate: create}, state: {}}
-		var updated = {tag: "div", attrs: {onupdate: update}, state: {}}
+		var vnode = m("div", {onupdate: create})
+		var updated = m("div", {onupdate: update})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -84,8 +85,8 @@ o.spec("onupdate", function() {
 	o("calls onupdate when updating attr", function() {
 		var create = o.spy()
 		var update = o.spy()
-		var vnode = {tag: "div", attrs: {onupdate: create}, state: {}}
-		var updated = {tag: "div", attrs: {onupdate: update, id: "a"}, state: {}}
+		var vnode = m("div", {onupdate: create})
+		var updated = m("div", {onupdate: update, id: "a"})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -98,22 +99,8 @@ o.spec("onupdate", function() {
 	o("calls onupdate when updating children", function() {
 		var create = o.spy()
 		var update = o.spy()
-		var vnode = {tag: "div", attrs: {onupdate: create}, children: [{tag: "a"}], state: {}}
-		var updated = {tag: "div", attrs: {onupdate: update}, children: [{tag: "b"}], state: {}}
-
-		render(root, [vnode])
-		render(root, [updated])
-
-		o(create.callCount).equals(0)
-		o(update.callCount).equals(1)
-		o(update.this).equals(vnode.state)
-		o(update.args[0]).equals(updated)
-	})
-	o("calls onupdate when updating text", function() {
-		var create = o.spy()
-		var update = o.spy()
-		var vnode = {tag: "#", attrs: {onupdate: create}, children: "a", state: {}}
-		var updated = {tag: "#", attrs: {onupdate: update}, children: "a", state: {}}
+		var vnode = m("div", {onupdate: create}, m("a"))
+		var updated = m("div", {onupdate: update}, m("b"))
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -126,22 +113,8 @@ o.spec("onupdate", function() {
 	o("calls onupdate when updating fragment", function() {
 		var create = o.spy()
 		var update = o.spy()
-		var vnode = {tag: "[", attrs: {onupdate: create}, children: [], state: {}}
-		var updated = {tag: "[", attrs: {onupdate: update}, children: [], state: {}}
-
-		render(root, [vnode])
-		render(root, [updated])
-
-		o(create.callCount).equals(0)
-		o(update.callCount).equals(1)
-		o(update.this).equals(vnode.state)
-		o(update.args[0]).equals(updated)
-	})
-	o("calls onupdate when updating html", function() {
-		var create = o.spy()
-		var update = o.spy()
-		var vnode = {tag: "<", attrs: {onupdate: create}, children: "a", state: {}}
-		var updated = {tag: "<", attrs: {onupdate: update}, children: "a", state: {}}
+		var vnode = m.fragment({onupdate: create})
+		var updated = m.fragment({onupdate: update})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -153,16 +126,16 @@ o.spec("onupdate", function() {
 	})
 	o("calls onupdate after full DOM update", function() {
 		var called = false
-		var vnode = {tag: "div", attrs: {id: "1"}, children: [
-			{tag: "a", attrs: {id: "2"}, children: [
-				{tag: "b", attrs: {id: "3"}}
-			]}
-		]}
-		var updated = {tag: "div", attrs: {id: "11"}, children: [
-			{tag: "a", attrs: {onupdate: update, id: "22"}, children: [
-				{tag: "b", attrs: {id: "33"}}
-			]}
-		]}
+		var vnode = m("div", {id: "1"},
+			m("a", {id: "2"},
+        m("b", {id: "3"})
+      )
+    )
+		var updated = m("div", {id: "11"},
+			m("a", {onupdate: update, id: "22"},
+        m("b", {id: "33"})
+      )
+    )
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -178,7 +151,7 @@ o.spec("onupdate", function() {
 	})
 	o("does not set onupdate as an event handler", function() {
 		var update = o.spy()
-		var vnode = {tag: "div", attrs: {onupdate: update}, children: []}
+		var vnode = m("div", {onupdate: update})
 
 		render(root, [vnode])
 

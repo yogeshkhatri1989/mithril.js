@@ -3,6 +3,7 @@
 var o = require("../../ospec/ospec")
 var domMock = require("../../test-utils/domMock")
 var vdom = require("../../render/render")
+var m = require("../../render/hyperscript")
 
 o.spec("oncreate", function() {
 	var $window, root, render
@@ -14,17 +15,7 @@ o.spec("oncreate", function() {
 
 	o("calls oncreate when creating element", function() {
 		var callback = o.spy()
-		var vnode = {tag: "div", attrs: {oncreate: callback}, state: {}}
-
-		render(root, [vnode])
-
-		o(callback.callCount).equals(1)
-		o(callback.this).equals(vnode.state)
-		o(callback.args[0]).equals(vnode)
-	})
-	o("calls oncreate when creating text", function() {
-		var callback = o.spy()
-		var vnode = {tag: "#", attrs: {oncreate: callback}, children: "a", state: {}}
+		var vnode = m("div", {oncreate: callback})
 
 		render(root, [vnode])
 
@@ -34,17 +25,7 @@ o.spec("oncreate", function() {
 	})
 	o("calls oncreate when creating fragment", function() {
 		var callback = o.spy()
-		var vnode = {tag: "[", attrs: {oncreate: callback}, children: [], state: {}}
-
-		render(root, [vnode])
-
-		o(callback.callCount).equals(1)
-		o(callback.this).equals(vnode.state)
-		o(callback.args[0]).equals(vnode)
-	})
-	o("calls oncreate when creating html", function() {
-		var callback = o.spy()
-		var vnode = {tag: "<", attrs: {oncreate: callback}, children: "a", state: {}}
+		var vnode = m.fragment({oncreate: callback}, [])
 
 		render(root, [vnode])
 
@@ -55,8 +36,8 @@ o.spec("oncreate", function() {
 	o("calls oncreate when replacing keyed", function() {
 		var createDiv = o.spy()
 		var createA = o.spy()
-		var vnode = {tag: "div", key: 1, attrs: {oncreate: createDiv}, state: {}}
-		var updated = {tag: "a", key: 1, attrs: {oncreate: createA}, state: {}}
+		var vnode = m("div", {key: 1, oncreate: createDiv})
+		var updated = m("a", {key: 1, oncreate: createA})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -71,8 +52,8 @@ o.spec("oncreate", function() {
 	o("does not call oncreate when noop", function() {
 		var create = o.spy()
 		var update = o.spy()
-		var vnode = {tag: "div", attrs: {oncreate: create}, state: {}}
-		var updated = {tag: "div", attrs: {oncreate: update}, state: {}}
+		var vnode = m("div", {oncreate: create})
+		var updated = m("div", {oncreate: update})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -85,8 +66,8 @@ o.spec("oncreate", function() {
 	o("does not call oncreate when updating attr", function() {
 		var create = o.spy()
 		var update = o.spy()
-		var vnode = {tag: "div", attrs: {oncreate: create}, state: {}}
-		var updated = {tag: "div", attrs: {oncreate: update, id: "a"}, state: {}}
+		var vnode = m("div", {oncreate: create})
+		var updated = m("div", {oncreate: update, id: "a"})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -99,8 +80,8 @@ o.spec("oncreate", function() {
 	o("does not call oncreate when updating children", function() {
 		var create = o.spy()
 		var update = o.spy()
-		var vnode = {tag: "div", attrs: {oncreate: create}, children: [{tag: "a"}], state: {}}
-		var updated = {tag: "div", attrs: {oncreate: update}, children: [{tag: "b"}], state: {}}
+		var vnode = m("div", {oncreate: create}, m("a"))
+		var updated = m("div", {oncreate: update}, m("b"))
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -113,10 +94,10 @@ o.spec("oncreate", function() {
 	o("does not call oncreate when updating keyed", function() {
 		var create = o.spy()
 		var update = o.spy()
-		var vnode = {tag: "div", key: 1, attrs: {oncreate: create}, state: {}}
-		var otherVnode = {tag: "a", key: 2}
-		var updated = {tag: "div", key: 1, attrs: {oncreate: update}, state: {}}
-		var otherUpdated = {tag: "a", key: 2}
+		var vnode = m("div", {key: 1, oncreate: create})
+		var otherVnode = m("a", {key: 2})
+		var updated = m("div", {key: 1, oncreate: update})
+		var otherUpdated = m("a", {key: 2})
 
 		render(root, [vnode, otherVnode])
 		render(root, [otherUpdated, updated])
@@ -128,7 +109,7 @@ o.spec("oncreate", function() {
 	})
 	o("does not call oncreate when removing", function() {
 		var create = o.spy()
-		var vnode = {tag: "div", attrs: {oncreate: create}, state: {}}
+		var vnode = m("div", {oncreate: create})
 
 		render(root, [vnode])
 		render(root, [])
@@ -140,8 +121,8 @@ o.spec("oncreate", function() {
 	o("does not recycle when there's an oncreate", function() {
 		var create = o.spy()
 		var update = o.spy()
-		var vnode = {tag: "div", key: 1, attrs: {oncreate: create}, state: {}}
-		var updated = {tag: "div", key: 1, attrs: {oncreate: update}, state: {}}
+		var vnode = m("div", {key: 1, oncreate: create})
+		var updated = m("div", {key: 1, oncreate: update})
 
 		render(root, [vnode])
 		render(root, [])
@@ -159,8 +140,8 @@ o.spec("oncreate", function() {
 		var create = o.spy()
 		var update = o.spy()
 		var callback = o.spy()
-		var vnode = {tag: "div", attrs: {onupdate: create}, children: [], state: {}}
-		var updated = {tag: "div", attrs: {onupdate: update}, children: [{tag: "a", attrs: {oncreate: callback}, state: {}}], state: {}}
+		var vnode = m("div", {onupdate: create})
+		var updated = m("div", {onupdate: update}, m("a", {oncreate: callback}))
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -175,25 +156,25 @@ o.spec("oncreate", function() {
 	})
 	o("calls oncreate on unkeyed that falls into reverse list diff code path", function() {
 		var create = o.spy()
-		render(root, [{tag: "p"}, {tag: "div"}])
-		render(root, [{tag: "div", attrs: {oncreate: create}}, {tag: "div"}])
+		render(root, [m("p"), m("div")])
+		render(root, [m("div", {oncreate: create})])
 
 		o(create.callCount).equals(1)
 	})
 	o("calls oncreate on unkeyed that falls into forward list diff code path", function() {
 		var create = o.spy()
-		render(root, [{tag: "div"}, {tag: "p"}])
-		render(root, [{tag: "div"}, {tag: "div", attrs: {oncreate: create}}])
+		render(root, [m("div"), m("p")])
+		render(root, [m("div"), m("div", {oncreate: create})])
 
 		o(create.callCount).equals(1)
 	})
 	o("calls oncreate after full DOM creation", function() {
 		var created = false
-		var vnode = {tag: "div", children: [
-			{tag: "a", attrs: {oncreate: create}, children: [
-				{tag: "b"}
-			]}
-		]}
+		var vnode = m("div",
+			m("a", {oncreate: create},
+				m("b")
+      )
+    )
 
 		render(root, [vnode])
 
@@ -207,7 +188,7 @@ o.spec("oncreate", function() {
 	})
 	o("does not set oncreate as an event handler", function() {
 		var create = o.spy()
-		var vnode = {tag: "div", attrs: {oncreate: create}, children: []}
+		var vnode = m("div", {oncreate: create})
 
 		render(root, [vnode])
 
@@ -216,9 +197,9 @@ o.spec("oncreate", function() {
 	})
 	o("calls oncreate on recycle", function() {
 		var create = o.spy()
-		var vnodes = [{tag: "div", key: 1, attrs: {oncreate: create}}]
+		var vnodes = [m("div", {key: 1, oncreate: create})]
 		var temp = []
-		var updated = [{tag: "div", key: 1, attrs: {oncreate: create}}]
+		var updated = [m("div", {key: 1, oncreate: create})]
 
 		render(root, vnodes)
 		render(root, temp)

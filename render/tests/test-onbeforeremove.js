@@ -6,6 +6,7 @@ var components = require("../../test-utils/components")
 var domMock = require("../../test-utils/domMock")
 var vdom = require("../../render/render")
 var Promise = require("../../promise/promise")
+var m = require("../../render/hyperscript")
 
 o.spec("onbeforeremove", function() {
 	var $window, root, render
@@ -17,7 +18,7 @@ o.spec("onbeforeremove", function() {
 
 	o("does not call onbeforeremove when creating", function() {
 		var create = o.spy()
-		var vnode = {tag: "div", attrs: {onbeforeremove: create}}
+		var vnode = m("div", {onbeforeremove: create})
 
 		render(root, [vnode])
 
@@ -26,8 +27,8 @@ o.spec("onbeforeremove", function() {
 	o("does not call onbeforeremove when updating", function() {
 		var create = o.spy()
 		var update = o.spy()
-		var vnode = {tag: "div", attrs: {onbeforeremove: create}}
-		var updated = {tag: "div", attrs: {onbeforeremove: update}}
+		var vnode = m("div", {onbeforeremove: create})
+		var updated = m("div", {onbeforeremove: update})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -36,7 +37,7 @@ o.spec("onbeforeremove", function() {
 		o(update.callCount).equals(0)
 	})
 	o("calls onbeforeremove when removing element", function(done) {
-		var vnode = {tag: "div", attrs: {onbeforeremove: remove}}
+		var vnode = m("div", {onbeforeremove: remove})
 
 		render(root, [vnode])
 		render(root, [])
@@ -55,44 +56,8 @@ o.spec("onbeforeremove", function() {
 			})
 		}
 	})
-	o("calls onbeforeremove when removing text", function(done) {
-		var vnode = {tag: "#", attrs: {onbeforeremove: remove}, children: "a"}
-
-		render(root, [vnode])
-		render(root, [])
-
-		function remove(node) {
-			o(node).equals(vnode)
-			o(root.childNodes.length).equals(1)
-			o(root.firstChild).equals(vnode.dom)
-
-			callAsync(function() {
-				o(root.childNodes.length).equals(0)
-
-				done()
-			})
-		}
-	})
 	o("calls onbeforeremove when removing fragment", function(done) {
-		var vnode = {tag: "[", attrs: {onbeforeremove: remove}, children: [{tag: "div"}]}
-
-		render(root, [vnode])
-		render(root, [])
-
-		function remove(node) {
-			o(node).equals(vnode)
-			o(root.childNodes.length).equals(1)
-			o(root.firstChild).equals(vnode.dom)
-
-			callAsync(function() {
-				o(root.childNodes.length).equals(0)
-
-				done()
-			})
-		}
-	})
-	o("calls onbeforeremove when removing html", function(done) {
-		var vnode = {tag: "<", attrs: {onbeforeremove: remove}, children: "a"}
+		var vnode = m.fragment({onbeforeremove: remove}, [m("div")])
 
 		render(root, [vnode])
 		render(root, [])
@@ -111,7 +76,7 @@ o.spec("onbeforeremove", function() {
 	})
 	o("calls remove after onbeforeremove resolves", function(done) {
 		var spy = o.spy()
-		var vnode = {tag: "<", attrs: {onbeforeremove: remove, onremove: spy}, children: "a"}
+		var vnode = m("div", {onbeforeremove: remove, onremove: spy})
 
 		render(root, [vnode])
 		render(root, [])
@@ -131,7 +96,7 @@ o.spec("onbeforeremove", function() {
 	})
 	o("does not set onbeforeremove as an event handler", function() {
 		var remove = o.spy()
-		var vnode = {tag: "div", attrs: {onbeforeremove: remove}, children: []}
+		var vnode = m("div", {onbeforeremove: remove})
 
 		render(root, [vnode])
 
@@ -194,7 +159,7 @@ o.spec("onbeforeremove", function() {
 					onremove: onremove,
 					view: view,
 				})
-				render(root, [{tag: component}])
+				render(root, m(component))
 				render(root, [])
 
 				o(onremove.callCount).equals(0)

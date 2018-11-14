@@ -13,13 +13,13 @@ o.spec("createElement", function() {
 	})
 
 	o("creates element", function() {
-		var vnode = {tag: "div"}
+		var vnode = m("div")
 		render(root, [vnode])
 
 		o(vnode.dom.nodeName).equals("DIV")
 	})
 	o("creates attr", function() {
-		var vnode = {tag: "div", attrs: {id: "a", title: "b"}}
+		var vnode = m("div", {id: "a", title: "b"})
 		render(root, [vnode])
 
 		o(vnode.dom.nodeName).equals("DIV")
@@ -27,14 +27,14 @@ o.spec("createElement", function() {
 		o(vnode.dom.attributes["title"].value).equals("b")
 	})
 	o("creates style", function() {
-		var vnode = {tag: "div", attrs: {style: {backgroundColor: "red"}}}
+		var vnode = m("div", {style: {backgroundColor: "red"}})
 		render(root, [vnode])
 
 		o(vnode.dom.nodeName).equals("DIV")
 		o(vnode.dom.style.backgroundColor).equals("red")
 	})
 	o("creates children", function() {
-		var vnode = {tag: "div", children: [{tag: "a"}, {tag: "b"}]}
+		var vnode = m("div", [m("a"), m("b")])
 		render(root, [vnode])
 
 		o(vnode.dom.nodeName).equals("DIV")
@@ -43,7 +43,7 @@ o.spec("createElement", function() {
 		o(vnode.dom.childNodes[1].nodeName).equals("B")
 	})
 	o("creates attrs and children", function() {
-		var vnode = {tag: "div", attrs: {id: "a", title: "b"}, children: [{tag: "a"}, {tag: "b"}]}
+		var vnode = m("div", {id: "a", title: "b"}, [m("a"), m("b")])
 		render(root, [vnode])
 
 		o(vnode.dom.nodeName).equals("DIV")
@@ -57,7 +57,7 @@ o.spec("createElement", function() {
 	o("creates svg", function() {
 		var vnode = {tag: "svg", ns: "http://www.w3.org/2000/svg", children: [
 			{tag: "a", ns: "http://www.w3.org/2000/svg", attrs: {"xlink:href": "javascript:;"}},
-			{tag: "foreignObject", children: [{tag: "body", attrs: {xmlns: "http://www.w3.org/1999/xhtml"}}]}
+			m("foreignObject", [m("body", {xmlns: "http://www.w3.org/1999/xhtml"})])
 		]}
 		render(root, [vnode])
 

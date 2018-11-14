@@ -14,10 +14,10 @@ o.spec("createNodes", function() {
 
 	o("creates nodes", function() {
 		var vnodes = [
-			{tag: "a"},
-			{tag: "#", children: "b"},
-			{tag: "<", children: "c"},
-			{tag: "[", children: [{tag: "#", children: "d"}]},
+			m("a"),
+			"b",
+			m("<", "c"),
+			m.fragment(["d"]),
 		]
 		render(root, vnodes)
 
@@ -29,11 +29,11 @@ o.spec("createNodes", function() {
 	})
 	o("ignores null", function() {
 		var vnodes = [
-			{tag: "a"},
-			{tag: "#", children: "b"},
+			m("a"),
+			"b",
 			null,
-			{tag: "<", children: "c"},
-			{tag: "[", children: [{tag: "#", children: "d"}]},
+			m("<", "c"),
+			m.fragment(["d"]),
 		]
 		render(root, vnodes)
 
@@ -45,11 +45,11 @@ o.spec("createNodes", function() {
 	})
 	o("ignores undefined", function() {
 		var vnodes = [
-			{tag: "a"},
-			{tag: "#", children: "b"},
+			m("a"),
+			"b",
 			undefined,
-			{tag: "<", children: "c"},
-			{tag: "[", children: [{tag: "#", children: "d"}]},
+			m("<", "c"),
+			m.fragment(["d"]),
 		]
 		render(root, vnodes)
 

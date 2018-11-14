@@ -3,6 +3,7 @@
 var o = require("../../ospec/ospec")
 var domMock = require("../../test-utils/domMock")
 var vdom = require("../../render/render")
+var m = require("../../render/hyperscript")
 
 o.spec("updateElement", function() {
 	var $window, root, render
@@ -13,8 +14,8 @@ o.spec("updateElement", function() {
 	})
 
 	o("updates attr", function() {
-		var vnode = {tag: "a", attrs: {id: "b"}}
-		var updated = {tag: "a", attrs: {id: "c"}}
+		var vnode = m("a", {id: "b"})
+		var updated = m("a", {id: "c"})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -24,8 +25,8 @@ o.spec("updateElement", function() {
 		o(updated.dom.attributes["id"].value).equals("c")
 	})
 	o("adds attr", function() {
-		var vnode = {tag: "a", attrs: {id: "b"}}
-		var updated = {tag: "a", attrs: {id: "c", title: "d"}}
+		var vnode = m("a", {id: "b"})
+		var updated = m("a", {id: "c", title: "d"})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -35,8 +36,8 @@ o.spec("updateElement", function() {
 		o(updated.dom.attributes["title"].value).equals("d")
 	})
 	o("adds attr from empty attrs", function() {
-		var vnode = {tag: "a"}
-		var updated = {tag: "a", attrs: {title: "d"}}
+		var vnode = m("a")
+		var updated = m("a", {title: "d"})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -46,8 +47,8 @@ o.spec("updateElement", function() {
 		o(updated.dom.attributes["title"].value).equals("d")
 	})
 	o("removes attr", function() {
-		var vnode = {tag: "a", attrs: {id: "b", title: "d"}}
-		var updated = {tag: "a", attrs: {id: "c"}}
+		var vnode = m("a", {id: "b", title: "d"})
+		var updated = m("a", {id: "c"})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -57,8 +58,8 @@ o.spec("updateElement", function() {
 		o("title" in updated.dom.attributes).equals(false)
 	})
 	o("removes class", function() {
-		var vnode = {tag: "a", attrs: {id: "b", className: "d"}}
-		var updated = {tag: "a", attrs: {id: "c"}}
+		var vnode = m("a", {id: "b", className: "d"})
+		var updated = m("a", {id: "c"})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -68,8 +69,8 @@ o.spec("updateElement", function() {
 		o("class" in updated.dom.attributes).equals(false)
 	})
 	o("creates style object", function() {
-		var vnode = {tag: "a", attrs: {}}
-		var updated = {tag: "a", attrs: {style: {backgroundColor: "green"}}}
+		var vnode = m("a", {})
+		var updated = m("a", {style: {backgroundColor: "green"}})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -77,8 +78,8 @@ o.spec("updateElement", function() {
 		o(updated.dom.style.backgroundColor).equals("green")
 	})
 	o("creates style string", function() {
-		var vnode = {tag: "a", attrs: {}}
-		var updated = {tag: "a", attrs: {style: "background-color:green"}}
+		var vnode = m("a", {})
+		var updated = m("a", {style: "background-color:green"})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -86,8 +87,8 @@ o.spec("updateElement", function() {
 		o(updated.dom.style.backgroundColor).equals("green")
 	})
 	o("updates style from object to object", function() {
-		var vnode = {tag: "a", attrs: {style: {backgroundColor: "red"}}}
-		var updated = {tag: "a", attrs: {style: {backgroundColor: "green"}}}
+		var vnode = m("a", {style: {backgroundColor: "red"}})
+		var updated = m("a", {style: {backgroundColor: "green"}})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -95,8 +96,8 @@ o.spec("updateElement", function() {
 		o(updated.dom.style.backgroundColor).equals("green")
 	})
 	o("updates style from object to string", function() {
-		var vnode = {tag: "a", attrs: {style: {backgroundColor: "red"}}}
-		var updated = {tag: "a", attrs: {style: "background-color:green;"}}
+		var vnode = m("a", {style: {backgroundColor: "red"}})
+		var updated = m("a", {style: "background-color:green;"})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -104,8 +105,8 @@ o.spec("updateElement", function() {
 		o(updated.dom.style.backgroundColor).equals("green")
 	})
 	o("handles noop style change when style is string", function() {
-		var vnode = {tag: "a", attrs: {style: "background-color:green;"}}
-		var updated = {tag: "a", attrs: {style: "background-color:green;"}}
+		var vnode = m("a", {style: "background-color:green;"})
+		var updated = m("a", {style: "background-color:green;"})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -113,8 +114,8 @@ o.spec("updateElement", function() {
 		o(updated.dom.style.backgroundColor).equals("green")
 	})
 	o("handles noop style change when style is object", function() {
-		var vnode = {tag: "a", attrs: {style: {backgroundColor: "red"}}}
-		var updated = {tag: "a", attrs: {style: {backgroundColor: "red"}}}
+		var vnode = m("a", {style: {backgroundColor: "red"}})
+		var updated = m("a", {style: {backgroundColor: "red"}})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -122,8 +123,8 @@ o.spec("updateElement", function() {
 		o(updated.dom.style.backgroundColor).equals("red")
 	})
 	o("updates style from string to object", function() {
-		var vnode = {tag: "a", attrs: {style: "background-color:red;"}}
-		var updated = {tag: "a", attrs: {style: {backgroundColor: "green"}}}
+		var vnode = m("a", {style: "background-color:red;"})
+		var updated = m("a", {style: {backgroundColor: "green"}})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -131,8 +132,8 @@ o.spec("updateElement", function() {
 		o(updated.dom.style.backgroundColor).equals("green")
 	})
 	o("updates style from string to string", function() {
-		var vnode = {tag: "a", attrs: {style: "background-color:red;"}}
-		var updated = {tag: "a", attrs: {style: "background-color:green;"}}
+		var vnode = m("a", {style: "background-color:red;"})
+		var updated = m("a", {style: "background-color:green;"})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -140,8 +141,8 @@ o.spec("updateElement", function() {
 		o(updated.dom.style.backgroundColor).equals("green")
 	})
 	o("removes style from object to object", function() {
-		var vnode = {tag: "a", attrs: {style: {backgroundColor: "red", border: "1px solid red"}}}
-		var updated = {tag: "a", attrs: {style: {backgroundColor: "red"}}}
+		var vnode = m("a", {style: {backgroundColor: "red", border: "1px solid red"}})
+		var updated = m("a", {style: {backgroundColor: "red"}})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -150,8 +151,8 @@ o.spec("updateElement", function() {
 		o(updated.dom.style.border).equals("")
 	})
 	o("removes style from string to object", function() {
-		var vnode = {tag: "a", attrs: {style: "background-color:red;border:1px solid red"}}
-		var updated = {tag: "a", attrs: {style: {backgroundColor: "red"}}}
+		var vnode = m("a", {style: "background-color:red;border:1px solid red"})
+		var updated = m("a", {style: {backgroundColor: "red"}})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -160,8 +161,8 @@ o.spec("updateElement", function() {
 		o(updated.dom.style.border).notEquals("1px solid red")
 	})
 	o("removes style from object to string", function() {
-		var vnode = {tag: "a", attrs: {style: {backgroundColor: "red", border: "1px solid red"}}}
-		var updated = {tag: "a", attrs: {style: "background-color:red"}}
+		var vnode = m("a", {style: {backgroundColor: "red", border: "1px solid red"}})
+		var updated = m("a", {style: "background-color:red"})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -170,8 +171,8 @@ o.spec("updateElement", function() {
 		o(updated.dom.style.border).equals("")
 	})
 	o("removes style from string to string", function() {
-		var vnode = {tag: "a", attrs: {style: "background-color:red;border:1px solid red"}}
-		var updated = {tag: "a", attrs: {style: "background-color:red"}}
+		var vnode = m("a", {style: "background-color:red;border:1px solid red"})
+		var updated = m("a", {style: "background-color:red"})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -181,12 +182,12 @@ o.spec("updateElement", function() {
 	})
 	o("updates style when it's same object but mutated", function() {
 		var style = {backgroundColor: "red", color: "gold"}
-		var vnode = {tag: "a", attrs: {style: style}}
+		var vnode = m("a", {style: style})
 
 		render(root, [vnode])
 
 		delete style.backgroundColor
-		var updated = {tag: "a", attrs: {style: style}}
+		var updated = m("a", {style: style})
 		render(root, [updated])
 
 		o(updated.dom.style.backgroundColor).equals("")
@@ -194,13 +195,13 @@ o.spec("updateElement", function() {
 	})
 	o("does not re-render element styles for equivalent style objects", function() {
 		var style = {color: "gold"}
-		var vnode = {tag: "a", attrs: {style: style}}
+		var vnode = m("a", {style: style})
 
 		render(root, [vnode])
 
 		root.firstChild.style.color = "red"
 		style = {color: "gold"}
-		var updated = {tag: "a", attrs: {style: style}}
+		var updated = m("a", {style: style})
 		render(root, [updated])
 
 		o(updated.dom.style.color).equals("red")
@@ -272,8 +273,8 @@ o.spec("updateElement", function() {
 		}
 	})
 	o("replaces el", function() {
-		var vnode = {tag: "a"}
-		var updated = {tag: "b"}
+		var vnode = m("a")
+		var updated = m("b")
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -282,8 +283,8 @@ o.spec("updateElement", function() {
 		o(updated.dom.nodeName).equals("B")
 	})
 	o("updates svg class", function() {
-		var vnode = {tag: "svg", attrs: {className: "a"}}
-		var updated = {tag: "svg", attrs: {className: "b"}}
+		var vnode = m("svg", {className: "a"})
+		var updated = m("svg", {className: "b"})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -304,8 +305,8 @@ o.spec("updateElement", function() {
 		o(updated.dom.firstChild.namespaceURI).equals("http://www.w3.org/2000/svg")
 	})
 	o("doesn't restore since we're not recycling", function() {
-		var vnode = {tag: "div", key: 1}
-		var updated = {tag: "div", key: 2}
+		var vnode = m("div", {key: 1})
+		var updated = m("div", {key: 2})
 
 		render(root, [vnode])
 		var a = vnode.dom
@@ -319,12 +320,12 @@ o.spec("updateElement", function() {
 		o(a).notEquals(c) // this used to be a recycling pool test
 	})
 	o("doesn't restore since we're not recycling (via map)", function() {
-		var a = {tag: "div", key: 1}
-		var b = {tag: "div", key: 2}
-		var c = {tag: "div", key: 3}
-		var d = {tag: "div", key: 4}
-		var e = {tag: "div", key: 5}
-		var f = {tag: "div", key: 6}
+		var a = m("div", {key: 1})
+		var b = m("div", {key: 2})
+		var c = m("div", {key: 3})
+		var d = m("div", {key: 4})
+		var e = m("div", {key: 5})
+		var f = m("div", {key: 6})
 
 		render(root, [a, b, c])
 		var x = root.childNodes[1]

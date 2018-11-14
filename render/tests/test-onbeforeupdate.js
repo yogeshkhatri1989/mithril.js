@@ -4,6 +4,7 @@ var o = require("../../ospec/ospec")
 var components = require("../../test-utils/components")
 var domMock = require("../../test-utils/domMock")
 var vdom = require("../../render/render")
+var m = require("../../render/hyperscript")
 
 o.spec("onbeforeupdate", function() {
 	var $window, root, render
@@ -15,8 +16,8 @@ o.spec("onbeforeupdate", function() {
 
 	o("prevents update in element", function() {
 		var onbeforeupdate = function() {return false}
-		var vnode = {tag: "div", attrs: {id: "a", onbeforeupdate: onbeforeupdate}}
-		var updated = {tag: "div", attrs: {id: "b", onbeforeupdate: onbeforeupdate}}
+		var vnode = m("div", {id: "a", onbeforeupdate: onbeforeupdate})
+		var updated = m("div", {id: "b", onbeforeupdate: onbeforeupdate})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -24,32 +25,10 @@ o.spec("onbeforeupdate", function() {
 		o(root.firstChild.attributes["id"].value).equals("a")
 	})
 
-	o("prevents update in text", function() {
-		var onbeforeupdate = function() {return false}
-		var vnode = {tag: "#", attrs: {onbeforeupdate: onbeforeupdate}, children: "a"}
-		var updated = {tag: "#", attrs: {onbeforeupdate: onbeforeupdate}, children: "b"}
-
-		render(root, [vnode])
-		render(root, [updated])
-
-		o(root.firstChild.nodeValue).equals("a")
-	})
-
-	o("prevents update in html", function() {
-		var onbeforeupdate = function() {return false}
-		var vnode = {tag: "<", attrs: {onbeforeupdate: onbeforeupdate}, children: "a"}
-		var updated = {tag: "<", attrs: {onbeforeupdate: onbeforeupdate}, children: "b"}
-
-		render(root, [vnode])
-		render(root, [updated])
-
-		o(root.firstChild.nodeValue).equals("a")
-	})
-
 	o("prevents update in fragment", function() {
 		var onbeforeupdate = function() {return false}
-		var vnode = {tag: "[", attrs: {onbeforeupdate: onbeforeupdate}, children: [{tag: "#", children: "a"}]}
-		var updated = {tag: "[", attrs: {onbeforeupdate: onbeforeupdate}, children: [{tag: "#", children: "b"}]}
+		var vnode = m.fragment({onbeforeupdate: onbeforeupdate}, ["a"])
+		var updated = m.fragment({onbeforeupdate: onbeforeupdate}, ["b"])
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -59,8 +38,8 @@ o.spec("onbeforeupdate", function() {
 
 	o("does not prevent update if returning true", function() {
 		var onbeforeupdate = function() {return true}
-		var vnode = {tag: "div", attrs: {id: "a", onbeforeupdate: onbeforeupdate}}
-		var updated = {tag: "div", attrs: {id: "b", onbeforeupdate: onbeforeupdate}}
+		var vnode = m("div", {id: "a", onbeforeupdate: onbeforeupdate})
+		var updated = m("div", {id: "b", onbeforeupdate: onbeforeupdate})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -70,8 +49,8 @@ o.spec("onbeforeupdate", function() {
 
 	o("accepts arguments for comparison", function() {
 		var count = 0
-		var vnode = {tag: "div", attrs: {id: "a", onbeforeupdate: onbeforeupdate}}
-		var updated = {tag: "div", attrs: {id: "b", onbeforeupdate: onbeforeupdate}}
+		var vnode = m("div", {id: "a", onbeforeupdate: onbeforeupdate})
+		var updated = m("div", {id: "b", onbeforeupdate: onbeforeupdate})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -91,7 +70,7 @@ o.spec("onbeforeupdate", function() {
 
 	o("is not called on creation", function() {
 		var count = 0
-		var vnode = {tag: "div", attrs: {id: "a", onbeforeupdate: onbeforeupdate}}
+		var vnode = m("div", {id: "a", onbeforeupdate: onbeforeupdate})
 
 		render(root, [vnode])
 
@@ -105,8 +84,8 @@ o.spec("onbeforeupdate", function() {
 
 	o("is called only once on update", function() {
 		var count = 0
-		var vnode = {tag: "div", attrs: {id: "a", onbeforeupdate: onbeforeupdate}}
-		var updated = {tag: "div", attrs: {id: "b", onbeforeupdate: onbeforeupdate}}
+		var vnode = m("div", {id: "a", onbeforeupdate: onbeforeupdate})
+		var updated = m("div", {id: "b", onbeforeupdate: onbeforeupdate})
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -121,7 +100,7 @@ o.spec("onbeforeupdate", function() {
 
 	o("doesn't fire on recycled nodes", function() {
 		var onbeforeupdate = o.spy()
-		var vnodes = [{tag: "div", key: 1}]
+		var vnodes = [m("div", {key: 1})]
 		var temp = []
 		var updated = [{tag: "div", key: 1, attrs: {onbeforeupdate: onbeforeupdate}}]
 
@@ -142,11 +121,11 @@ o.spec("onbeforeupdate", function() {
 				var component = createComponent({
 					onbeforeupdate: function() {return false},
 					view: function(vnode) {
-						return {tag: "div", children: vnode.children}
+						return m("div", vnode.children)
 					},
 				})
-				var vnode = {tag: component, children: [{tag: "#", children: "a"}]}
-				var updated = {tag: component, children: [{tag: "#", children: "b"}]}
+				var vnode = m(component, "a")
+				var updated = m(component, "b")
 
 				render(root, [vnode])
 				render(root, [updated])
@@ -158,7 +137,7 @@ o.spec("onbeforeupdate", function() {
 				var component = createComponent({
 					onbeforeupdate: function() {return false},
 					view: function(vnode) {
-						return {tag: "div", attrs: {id: vnode.attrs.id}}
+						return m("div", {id: vnode.attrs.id})
 					},
 				})
 				var vnode = {tag: component, attrs: {id: "a", onbeforeupdate: function() {return false}}}
@@ -174,7 +153,7 @@ o.spec("onbeforeupdate", function() {
 				var component = createComponent({
 					onbeforeupdate: function() {return true},
 					view: function(vnode) {
-						return {tag: "div", attrs: {id: vnode.attrs.id}}
+						return m("div", {id: vnode.attrs.id})
 					},
 				})
 				var vnode = {tag: component, attrs: {id: "a", onbeforeupdate: function() {return true}}}
@@ -190,7 +169,7 @@ o.spec("onbeforeupdate", function() {
 				var component = createComponent({
 					onbeforeupdate: function() {return false},
 					view: function(vnode) {
-						return {tag: "div", attrs: {id: vnode.attrs.id}}
+						return m("div", {id: vnode.attrs.id})
 					},
 				})
 				var vnode = {tag: component, attrs: {id: "a", onbeforeupdate: function() {return true}}}
@@ -206,7 +185,7 @@ o.spec("onbeforeupdate", function() {
 				var component = createComponent({
 					onbeforeupdate: function() {return true},
 					view: function(vnode) {
-						return {tag: "div", attrs: {id: vnode.attrs.id}}
+						return m("div", {id: vnode.attrs.id})
 					},
 				})
 				var vnode = {tag: component, attrs: {id: "a", onbeforeupdate: function() {return false}}}
@@ -222,7 +201,7 @@ o.spec("onbeforeupdate", function() {
 				var component = createComponent({
 					onbeforeupdate: function() {return true},
 					view: function(vnode) {
-						return {tag: "div", attrs: vnode.attrs}
+						return m("div", vnode.attrs)
 					},
 				})
 				var vnode = {tag: component, attrs: {id: "a"}}
@@ -238,7 +217,7 @@ o.spec("onbeforeupdate", function() {
 				var component = createComponent({
 					onbeforeupdate: onbeforeupdate,
 					view: function(vnode) {
-						return {tag: "div", attrs: vnode.attrs}
+						return m("div", vnode.attrs)
 					},
 				})
 				var count = 0
@@ -265,12 +244,12 @@ o.spec("onbeforeupdate", function() {
 				createComponent({
 					onbeforeupdate: onbeforeupdate,
 					view: function(vnode) {
-						return {tag: "div", attrs: vnode.attrs}
+						return m("div", vnode.attrs)
 					},
 				})
 
 				var count = 0
-				var vnode = {tag: "div", attrs: {id: "a"}}
+				var vnode = m("div", {id: "a"})
 
 				render(root, [vnode])
 
@@ -286,7 +265,7 @@ o.spec("onbeforeupdate", function() {
 				var component = createComponent({
 					onbeforeupdate: onbeforeupdate,
 					view: function(vnode) {
-						return {tag: "div", attrs: vnode.attrs}
+						return m("div", vnode.attrs)
 					},
 				})
 

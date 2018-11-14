@@ -1,12 +1,12 @@
 "use strict"
 
 var o = require("../../ospec/ospec")
-var fragment = require("../../render/fragment")
+var m = require("../../hyperscript")
 
 o.spec("fragment", function() {
 	o("works", function() {
 		var attrs = {foo: 5}
-		var child = {tag: "p"}
+		var child = m("p")
 		var frag = fragment(attrs, [child])
 
 		o(frag.tag).equals("[")

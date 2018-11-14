@@ -13,8 +13,8 @@ o.spec("updateHTML", function() {
 	})
 
 	o("updates html", function() {
-		var vnode = {tag: "<", children: "a"}
-		var updated = {tag: "<", children: "b"}
+		var vnode = m("<", "a")
+		var updated = m("<", "b")
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -24,8 +24,8 @@ o.spec("updateHTML", function() {
 		o(updated.dom.nodeValue).equals("b")
 	})
 	o("adds html", function() {
-		var vnode = {tag: "<", children: ""}
-		var updated = {tag: "<", children: "<a></a><b></b>"}
+		var vnode = m("<", "")
+		var updated = m("<", "<a></a><b></b>")
 
 		render(root, [vnode])
 		render(root, [updated])
@@ -37,8 +37,8 @@ o.spec("updateHTML", function() {
 		o(root.childNodes[1].nodeName).equals("B")
 	})
 	o("removes html", function() {
-		var vnode = {tag: "<", children: "<a></a><b></b>"}
-		var updated = {tag: "<", children: ""}
+		var vnode = m("<", "<a></a><b></b>")
+		var updated = m("<", "")
 
 		render(root, [vnode])
 		render(root, [updated])

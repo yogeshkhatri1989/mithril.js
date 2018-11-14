@@ -3,6 +3,7 @@
 var o = require("../../ospec/ospec")
 var domMock = require("../../test-utils/domMock")
 var vdom = require("../../render/render")
+var m = require("../../render/hyperscript")
 
 o.spec("render", function() {
 	var $window, root, render
@@ -64,7 +65,7 @@ o.spec("render", function() {
 			view: function() {throw new Error("error")}
 		}
 		function run() {
-			render(root, {tag: A})
+			render(root, m(A))
 		}
 		function init() {
 			setTimeout(function() {
@@ -90,13 +91,13 @@ o.spec("render", function() {
 		A.prototype.onbeforeupdate = onbeforeupdate
 		var throwCount = 0
 
-		try {render(root, {tag: A})} catch (e) {throwCount++}
+		try {render(root, m(A))} catch (e) {throwCount++}
 
 		o(throwCount).equals(1)
 		o(oninit.callCount).equals(1)
 		o(onbeforeupdate.callCount).equals(0)
 
-		try {render(root, {tag: A})} catch (e) {throwCount++}
+		try {render(root, m(A))} catch (e) {throwCount++}
 
 		o(throwCount).equals(1)
 		o(oninit.callCount).equals(1)
@@ -111,13 +112,13 @@ o.spec("render", function() {
 		A.prototype.onbeforeupdate = onbeforeupdate
 		var throwCount = 0
 
-		try {render(root, {tag: A})} catch (e) {throwCount++}
+		try {render(root, m(A))} catch (e) {throwCount++}
 
 		o(throwCount).equals(1)
 		o(oninit.callCount).equals(1)
 		o(onbeforeupdate.callCount).equals(0)
 
-		try {render(root, {tag: A})} catch (e) {throwCount++}
+		try {render(root, m(A))} catch (e) {throwCount++}
 
 		o(throwCount).equals(1)
 		o(oninit.callCount).equals(1)
@@ -132,13 +133,13 @@ o.spec("render", function() {
 		A.prototype.onbeforeupdate = onbeforeupdate
 		var throwCount = 0
 
-		try {render(root, {tag: A})} catch (e) {throwCount++}
+		try {render(root, m(A))} catch (e) {throwCount++}
 
 		o(throwCount).equals(1)
 		o(oninit.callCount).equals(0)
 		o(onbeforeupdate.callCount).equals(0)
 
-		try {render(root, {tag: A})} catch (e) {throwCount++}
+		try {render(root, m(A))} catch (e) {throwCount++}
 
 		o(throwCount).equals(1)
 		o(oninit.callCount).equals(0)
@@ -155,13 +156,13 @@ o.spec("render", function() {
 			}
 		}
 		var throwCount = 0
-		try {render(root, {tag: A})} catch (e) {throwCount++}
+		try {render(root, m(A))} catch (e) {throwCount++}
 
 		o(throwCount).equals(1)
 		o(oninit.callCount).equals(1)
 		o(onbeforeupdate.callCount).equals(0)
 
-		try {render(root, {tag: A})} catch (e) {throwCount++}
+		try {render(root, m(A))} catch (e) {throwCount++}
 
 		o(throwCount).equals(1)
 		o(oninit.callCount).equals(1)
@@ -178,13 +179,13 @@ o.spec("render", function() {
 			}
 		}
 		var throwCount = 0
-		try {render(root, {tag: A})} catch (e) {throwCount++}
+		try {render(root, m(A))} catch (e) {throwCount++}
 
 		o(throwCount).equals(1)
 		o(oninit.callCount).equals(1)
 		o(onbeforeupdate.callCount).equals(0)
 
-		try {render(root, {tag: A})} catch (e) {throwCount++}
+		try {render(root, m(A))} catch (e) {throwCount++}
 
 		o(throwCount).equals(1)
 		o(oninit.callCount).equals(1)
@@ -195,11 +196,11 @@ o.spec("render", function() {
 			throw new Error("error")
 		}
 		var throwCount = 0
-		try {render(root, {tag: A})} catch (e) {throwCount++}
+		try {render(root, m(A))} catch (e) {throwCount++}
 
 		o(throwCount).equals(1)
 
-		try {render(root, {tag: A})} catch (e) {throwCount++}
+		try {render(root, m(A))} catch (e) {throwCount++}
 
 		o(throwCount).equals(1)
 	})
@@ -213,13 +214,13 @@ o.spec("render", function() {
 		var a = function() {
 			return {tag: "div", key: 1, children: [
 				{tag: "div", key: 11, attrs: {oncreate: createA, onupdate: updateA, onremove: removeA}},
-				{tag: "div", key: 12}
+				m("div", {key: 12})
 			]}
 		}
 		var b = function() {
 			return {tag: "div", key: 2, children: [
 				{tag: "div", key: 21, attrs: {oncreate: createB, onupdate: updateB, onremove: removeB}},
-				{tag: "div", key: 22}
+				m("div", {key: 22})
 			]}
 		}
 		render(root, a())
@@ -242,12 +243,12 @@ o.spec("render", function() {
 		var removeB = o.spy()
 		var a = function() {
 			return {tag: "div", key: 1, children: [
-				{tag: "div", attrs: {oncreate: createA, onupdate: updateA, onremove: removeA}},
+				m("div", {oncreate: createA, onupdate: updateA, onremove: removeA}),
 			]}
 		}
 		var b = function() {
 			return {tag: "div", key: 2, children: [
-				{tag: "div", attrs: {oncreate: createB, onupdate: updateB, onremove: removeB}},
+				m("div", {oncreate: createB, onupdate: updateB, onremove: removeB}),
 			]}
 		}
 		render(root, a())
@@ -271,12 +272,12 @@ o.spec("render", function() {
 
 		var a = function() {
 			return {tag: "div", key: 1, children: [
-				{tag: "div", attrs: {oncreate: createA, onupdate: updateA, onremove: removeA}},
+				m("div", {oncreate: createA, onupdate: updateA, onremove: removeA}),
 			]}
 		}
 		var b = function() {
 			return {tag: "div", key: 2, children: [
-				{tag: "div", attrs: {oncreate: createB, onupdate: updateB, onremove: removeB}},
+				m("div", {oncreate: createB, onupdate: updateB, onremove: removeB}),
 			]}
 		}
 		render(root, a())
@@ -320,9 +321,9 @@ o.spec("render", function() {
 		o(svg.dom.childNodes[1].namespaceURI).equals("http://www.w3.org/2000/svg")
 	})
 	o("the namespace of the root is passed to children", function() {
-		render(root, [{tag: "svg"}])
+		render(root, [m("svg")])
 		o(root.childNodes[0].namespaceURI).equals("http://www.w3.org/2000/svg")
-		render(root.childNodes[0], [{tag: "g"}])
+		render(root.childNodes[0], [m("g")])
 		o(root.childNodes[0].childNodes[0].namespaceURI).equals("http://www.w3.org/2000/svg")
 	})
 })
