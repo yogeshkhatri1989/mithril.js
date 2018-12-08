@@ -176,6 +176,16 @@ o.spec("onupdate", function() {
 		}
 		o(called).equals(true)
 	})
+	o("receives the old vnode as its second argument", function(){
+		var update = o.spy()
+		var vnode = {tag: "div", key: 1, attrs: {onupdate: update}}
+		var updated = {tag: "div", key: 1, attrs: {onupdate: update}}
+
+		render(root, [vnode])
+		render(root, [updated])
+
+		o(update.args[1]).equals(vnode)
+	})
 	o("does not set onupdate as an event handler", function() {
 		var update = o.spy()
 		var vnode = {tag: "div", attrs: {onupdate: update}, children: []}

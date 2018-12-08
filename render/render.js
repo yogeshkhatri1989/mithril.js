@@ -440,7 +440,7 @@ module.exports = function($window) {
 			if (shouldNotUpdate(vnode, old)) return
 			if (typeof oldTag === "string") {
 				if (vnode.attrs != null) {
-					updateLifecycle(vnode.attrs, vnode, hooks)
+					updateLifecycle(vnode.attrs, vnode, old, hooks)
 				}
 				switch (oldTag) {
 					case "#": updateText(old, vnode); break
@@ -509,10 +509,10 @@ module.exports = function($window) {
 		}
 	}
 	function updateComponent(parent, old, vnode, hooks, nextSibling, ns) {
-		vnode.instance = Vnode.normalize(callHook.call(vnode.state.view, vnode))
+		vnode.instance = Vnode.normalize(callHook.call(vnode.state.view, vnode, old))
 		if (vnode.instance === vnode) throw Error("A view cannot return the vnode it received as argument")
-		updateLifecycle(vnode.state, vnode, hooks)
-		if (vnode.attrs != null) updateLifecycle(vnode.attrs, vnode, hooks)
+		updateLifecycle(vnode.state, vnode, old, hooks)
+		if (vnode.attrs != null) updateLifecycle(vnode.attrs, vnode, old, hooks)
 		if (vnode.instance != null) {
 			if (old.instance == null) createNode(parent, vnode.instance, hooks, ns, nextSibling)
 			else updateNode(parent, old.instance, vnode.instance, hooks, nextSibling, ns)
@@ -867,8 +867,8 @@ module.exports = function($window) {
 		if (typeof source.oninit === "function") callHook.call(source.oninit, vnode)
 		if (typeof source.oncreate === "function") hooks.push(callHook.bind(source.oncreate, vnode))
 	}
-	function updateLifecycle(source, vnode, hooks) {
-		if (typeof source.onupdate === "function") hooks.push(callHook.bind(source.onupdate, vnode))
+	function updateLifecycle(source, vnode, old, hooks) {
+		if (typeof source.onupdate === "function") hooks.push(callHook.bind(source.onupdate, vnode, old))
 	}
 	function shouldNotUpdate(vnode, old) {
 		do {

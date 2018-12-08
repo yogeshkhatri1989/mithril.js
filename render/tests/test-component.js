@@ -48,14 +48,17 @@ o.spec("component", function() {
 					o(root.firstChild.firstChild.nodeValue).equals("b")
 				})
 				o("updates", function() {
+					var view = o.spy(function(vnode) {
+						return {tag: "div", attrs: vnode.attrs, text: vnode.text}
+					})
 					var component = createComponent({
-						view: function(vnode) {
-							return {tag: "div", attrs: vnode.attrs, text: vnode.text}
-						}
+						view: view
 					})
 					render(root, [{tag: component, attrs: {id: "a"}, text: "b"}])
 					render(root, [{tag: component, attrs: {id: "c"}, text: "d"}])
 
+					o(view.args[0].attrs).deepEquals({id: "c"})
+					o(view.args[1].attrs).deepEquals({id: "a"})
 					o(root.firstChild.nodeName).equals("DIV")
 					o(root.firstChild.attributes["id"].value).equals("c")
 					o(root.firstChild.firstChild.nodeValue).equals("d")
@@ -806,11 +809,11 @@ o.spec("component", function() {
 						o(methods[hook].this).equals(methods.view.this)(hook)
 					})
 
-					o(methods.view.args.length).equals(1)
+					o(methods.view.args.length).equals(2)
 					o(methods.oninit.args.length).equals(1)
 					o(methods.oncreate.args.length).equals(1)
 					o(methods.onbeforeupdate.args.length).equals(2)
-					o(methods.onupdate.args.length).equals(1)
+					o(methods.onupdate.args.length).equals(2)
 					o(methods.onbeforeremove.args.length).equals(1)
 					o(methods.onremove.args.length).equals(1)
 
